@@ -213,10 +213,6 @@ export default function Home() {
           <div className="mt-14 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:max-w-xl">
             <a
               href="#academic"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("academic")?.scrollIntoView({ behavior: "smooth" });
-              }}
               className="flex min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90"
             >
               View
@@ -368,7 +364,7 @@ export default function Home() {
 
       <section
         id="academic"
-        className="border-t border-[#e5ddd3] bg-[#f7f2eb] px-8 py-28"
+        className="scroll-mt-24 border-t border-[#e5ddd3] bg-[#f7f2eb] px-8 py-28"
       >
         <div className="mx-auto max-w-6xl">
           <p className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b57967]">
