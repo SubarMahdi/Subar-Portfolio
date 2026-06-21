@@ -306,7 +306,7 @@ export default function Home() {
           <div className="space-y-6">
             <div className="overflow-hidden rounded-[2rem] border border-[#e3d7cc] bg-white p-3 shadow-sm">
               <img
-                src="/profile/subar-profile.jpg"
+                src="/profile/subar-profile.jpeg"
                 alt="Subar Mahdi"
                 className="h-[620px] w-full rounded-[1.5rem] object-cover object-top"
               />
