@@ -16,24 +16,6 @@ export default function Home() {
     };
   }, [activeModal]);
 
-  const scrollToAcademic = () => {
-    const section = document.getElementById("academic");
-
-    if (!section) {
-      window.location.href = "/#academic";
-      return;
-    }
-
-    const offset = 88;
-    const top = section.getBoundingClientRect().top + window.scrollY - offset;
-
-    window.scrollTo({
-      top,
-      behavior: "smooth",
-    });
-
-    window.history.replaceState(null, "", "#academic");
-  };
 
   const [thermalMediaIndex, setThermalMediaIndex] = useState(0);
   const softwareTools = [
@@ -182,14 +164,14 @@ export default function Home() {
       </nav>
 
       <section className="relative flex min-h-screen items-center overflow-hidden px-8 pt-24">
-        <div className="absolute right-[-170px] top-[120px] h-[720px] w-[720px] rounded-full border border-[#c89484]/30" />
-        <div className="absolute right-[-90px] top-[200px] h-[560px] w-[560px] rounded-full border border-[#c89484]/25" />
-        <div className="absolute right-[-10px] top-[280px] h-[400px] w-[400px] rounded-full border border-[#c89484]/25" />
-        <div className="absolute right-[90px] top-[380px] h-[230px] w-[230px] rounded-full border border-[#c89484]/35" />
+        <div className="pointer-events-none absolute right-[-170px] top-[120px] h-[720px] w-[720px] rounded-full border border-[#c89484]/30" />
+        <div className="pointer-events-none absolute right-[-90px] top-[200px] h-[560px] w-[560px] rounded-full border border-[#c89484]/25" />
+        <div className="pointer-events-none absolute right-[-10px] top-[280px] h-[400px] w-[400px] rounded-full border border-[#c89484]/25" />
+        <div className="pointer-events-none absolute right-[90px] top-[380px] h-[230px] w-[230px] rounded-full border border-[#c89484]/35" />
 
-        <div className="absolute right-[75px] top-[235px] h-10 w-10 animate-pulse rounded-full bg-[#b57967] shadow-xl" />
-        <div className="absolute right-[330px] top-[430px] h-6 w-6 animate-bounce rounded-full bg-[#82a9c9] shadow-lg" />
-        <div className="absolute right-[-5px] top-[670px] h-8 w-8 animate-pulse rounded-full bg-[#caa36b] shadow-lg" />
+        <div className="pointer-events-none absolute right-[75px] top-[235px] h-10 w-10 animate-pulse rounded-full bg-[#b57967] shadow-xl" />
+        <div className="pointer-events-none absolute right-[330px] top-[430px] h-6 w-6 animate-bounce rounded-full bg-[#82a9c9] shadow-lg" />
+        <div className="pointer-events-none absolute right-[-5px] top-[670px] h-8 w-8 animate-pulse rounded-full bg-[#caa36b] shadow-lg" />
 
         <div className="mx-auto w-full max-w-6xl">
           <p className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b57967]">
@@ -230,28 +212,14 @@ export default function Home() {
           </div>
 
           <div className="mt-14 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:max-w-xl">
-            <a
+                        <a
               href="#academic"
-              className="hidden min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90 sm:flex"
+              className="flex min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition duration-300 hover:opacity-90"
             >
               View
               <br />
               Projects
             </a>
-
-            <button
-              type="button"
-              onClick={scrollToAcademic}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                scrollToAcademic();
-              }}
-              className="flex min-h-20 w-full touch-manipulation items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90 sm:hidden"
-            >
-              View
-              <br />
-              Projects
-            </button>
 
             <a
               href="/cv.pdf"
