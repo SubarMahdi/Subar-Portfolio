@@ -497,7 +497,10 @@ export default function Home() {
               </p>
 
               <div className="rounded-3xl border border-[#e3d7cc] bg-white p-4">
-                <div className="overflow-hidden rounded-2xl bg-[#f7f2eb]">
+                <div
+  key={thermalMedia[thermalMediaIndex].src}
+  className="overflow-hidden rounded-2xl bg-[#f7f2eb] animate-media-fade"
+>
                   {thermalMedia[thermalMediaIndex].type === "image" ? (
                     <img
                       src={thermalMedia[thermalMediaIndex].src}
@@ -587,7 +590,7 @@ export default function Home() {
                 </span>
               </div>
               <p className="mt-6 font-mono text-xs uppercase tracking-[0.14em] text-neutral-400">
-                Sep 2025 · Present
+                Sep 2025 · May 2026
               </p>
               <h3 className="mt-3 font-serif text-3xl leading-tight">
                 RC Car
@@ -1271,7 +1274,10 @@ export default function Home() {
                 </p>
 
                 <div className="mt-5 rounded-3xl border border-[#e3d7cc] bg-white p-4">
-                  <div className="overflow-hidden rounded-2xl bg-[#f7f2eb]">
+                  <div
+  key={thermalMedia[thermalMediaIndex].src}
+  className="overflow-hidden rounded-2xl bg-[#f7f2eb] animate-media-fade"
+>
                     {thermalMedia[thermalMediaIndex].type === "image" ? (
                       <img
                         src={thermalMedia[thermalMediaIndex].src}
