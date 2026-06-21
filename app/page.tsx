@@ -211,26 +211,14 @@ export default function Home() {
           </div>
 
           <div className="mt-14 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:max-w-xl">
-            <button
-              type="button"
-              onClick={() => {
-                const section = document.getElementById("academic");
-                if (!section) return;
-
-                const offset = 88;
-                const top = section.getBoundingClientRect().top + window.scrollY - offset;
-
-                window.scrollTo({
-                  top,
-                  behavior: "smooth",
-                });
-              }}
+            <a
+              href="/#academic"
               className="flex min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90"
             >
               View
               <br />
               Projects
-            </button>
+            </a>
 
             <a
               href="/cv.pdf"
