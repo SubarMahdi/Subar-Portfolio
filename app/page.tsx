@@ -211,30 +211,25 @@ export default function Home() {
             </span>
           </div>
 
-          <div className="mt-14 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:max-w-xl">
-                        <a
+          <div className="mt-12 flex w-full flex-wrap gap-4">
+            <a
               href="#academic"
-              className="flex min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition duration-300 hover:opacity-90"
+              className="flex h-14 w-44 items-center justify-center rounded-md bg-[#1d1b18] px-6 text-center text-sm font-semibold text-white transition duration-300 hover:opacity-90"
             >
-              View
-              <br />
-              Projects
+              View Projects
             </a>
-
             <a
               href="/cv.pdf"
               download="Subar-Mahdi-CV.pdf"
-              className="flex min-h-20 w-full items-center justify-center rounded-md border border-[#ded3c7] bg-white/70 px-8 py-4 text-center text-lg font-semibold leading-tight transition hover:bg-white"
+              className="flex h-14 w-44 items-center justify-center rounded-md border border-[#ded3c7] bg-white/70 px-6 text-center text-sm font-semibold transition hover:bg-white"
             >
-              Download
-              <br />
-              CV
+              Download CV
             </a>
           </div>
 
           <a
             href="#about"
-            className="absolute bottom-16 left-1/2 hidden -translate-x-1/2 text-center text-xs uppercase tracking-[0.25em] text-neutral-400 transition hover:text-[#b57967] md:block"
+            className="absolute bottom-10 left-1/2 hidden -translate-x-1/2 text-center text-xs uppercase tracking-[0.25em] text-neutral-400 transition hover:text-[#b57967] md:block"
             aria-label="Scroll to about section"
           >
             <p>Scroll</p>
