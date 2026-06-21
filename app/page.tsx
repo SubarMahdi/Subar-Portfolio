@@ -199,20 +199,24 @@ export default function Home() {
             </span>
           </div>
 
-          <div className="mt-14 flex gap-4">
+          <div className="mt-14 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:max-w-xl">
             <a
-  href="#academic"
-  className="rounded-md bg-[#1d1b18] px-8 py-4 text-sm font-semibold text-white"
->
-  View Projects
-</a>
+              href="#academic"
+              className="flex min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90"
+            >
+              View
+              <br />
+              Projects
+            </a>
 
             <a
               href="/cv.pdf"
               download="Subar-Mahdi-CV.pdf"
-              className="rounded-md border border-[#ded3c7] bg-white/70 px-8 py-4 text-sm font-semibold"
+              className="flex min-h-20 w-full items-center justify-center rounded-md border border-[#ded3c7] bg-white/70 px-8 py-4 text-center text-lg font-semibold leading-tight transition hover:bg-white"
             >
-              Download CV
+              Download
+              <br />
+              CV
             </a>
           </div>
 
