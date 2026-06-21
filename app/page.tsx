@@ -1,9 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  useEffect(() => {
+    if (activeModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeModal]);
 
   const [thermalMediaIndex, setThermalMediaIndex] = useState(0);
   const softwareTools = [
@@ -202,6 +213,10 @@ export default function Home() {
           <div className="mt-14 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:max-w-xl">
             <a
               href="#academic"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("academic")?.scrollIntoView({ behavior: "smooth" });
+              }}
               className="flex min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90"
             >
               View
@@ -545,9 +560,9 @@ export default function Home() {
 
       <section
         id="beyond"
-        className="border-t border-[#e5ddd3] bg-[#f7f2eb] px-8 py-28"
+        className="scroll-mt-24 border-t border-[#e5ddd3] bg-[#f7f2eb] px-5 py-28 sm:px-8"
       >
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto w-full max-w-6xl">
           <p className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b57967]">
             <span className="h-px w-10 bg-[#b57967]" />
             Beyond the Curriculum
@@ -559,9 +574,9 @@ export default function Home() {
             <span className="italic">Curriculum</span>
           </h2>
 
-          <div className="mt-14 grid gap-6 md:grid-cols-2">
+          <div className="mx-auto mt-14 grid w-full max-w-5xl gap-6 md:max-w-none md:grid-cols-2">
 
-            <article className="rounded-[1.75rem] border border-[#e3d7cc] bg-white p-8 shadow-sm">
+            <article className="w-full rounded-[1.75rem] border border-[#e3d7cc] bg-white p-6 shadow-sm sm:p-8">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-md bg-[#ead4cd] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">
                   Vehicle Design
@@ -603,8 +618,7 @@ export default function Home() {
               </div>
             </article>
 
-
-            <article className="rounded-[1.75rem] border border-[#e3d7cc] bg-white p-8 shadow-sm">
+            <article className="w-full rounded-[1.75rem] border border-[#e3d7cc] bg-white p-6 shadow-sm sm:p-8">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-md bg-[#ead4cd] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">
                   Embedded Systems
@@ -646,7 +660,7 @@ export default function Home() {
               </div>
             </article>
 
-            <article className="rounded-[1.75rem] border border-[#e3d7cc] bg-white p-8 shadow-sm">
+            <article className="w-full rounded-[1.75rem] border border-[#e3d7cc] bg-white p-6 shadow-sm sm:p-8">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-md bg-[#ead4cd] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">
                   Mechanical Design
