@@ -234,7 +234,7 @@ export default function Home() {
 
           <a
             href="#about"
-            className="absolute bottom-10 right-12 hidden text-center text-xs uppercase tracking-[0.25em] text-neutral-400 transition hover:text-[#b57967] md:block"
+            className="absolute bottom-16 left-1/2 hidden -translate-x-1/2 text-center text-xs uppercase tracking-[0.25em] text-neutral-400 transition hover:text-[#b57967] md:block"
             aria-label="Scroll to about section"
           >
             <p>Scroll</p>
