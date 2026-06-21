@@ -514,7 +514,11 @@ export default function Home() {
                     />
                   )}
                 </div>
-
+<p className="mt-3 text-sm leading-6 text-neutral-600">
+  {thermalMediaIndex === 0
+    ? "Safety-threshold test: the screen shows the live temperature reading, while the LED changes from green to red when the system detects an unsafe temperature."
+    : "Thermal-camera test: the sensor detects body heat and turns the temperature readings into a live heat map, showing where the warm area is located."}
+</p>
                 <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
                   {thermalMedia.map((item, index) => (
                     <button
@@ -1041,7 +1045,7 @@ export default function Home() {
                   </p>
                 </div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">
-                  Sep 2025 · Present
+                  Sep 2025 · Jul 2026
                 </p>
               </div>
 
@@ -1065,7 +1069,7 @@ export default function Home() {
                   </p>
                 </div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">
-                  Sep 2025 · Present
+                  Sep 2025 · Jul 2026
                 </p>
               </div>
 
@@ -1089,7 +1093,7 @@ export default function Home() {
                   </p>
                 </div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">
-                  Sep 2025 · Present
+                  Sep 2025 · Jul 2026
                 </p>
               </div>
 
@@ -1284,7 +1288,11 @@ export default function Home() {
                       />
                     )}
                   </div>
-
+<p className="mt-3 text-sm leading-6 text-neutral-600">
+  {thermalMediaIndex === 0
+    ? "Safety-threshold test: the screen shows the live temperature reading, while the LED changes from green to red when the system detects an unsafe temperature."
+    : "Thermal-camera test: the sensor detects body heat and turns the temperature readings into a live heat map, showing where the warm area is located."}
+</p>
                   <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
                     {thermalMedia.map((item, index) => (
                       <button
@@ -1410,6 +1418,9 @@ export default function Home() {
                 <div className="mt-5 rounded-3xl border border-[#e3d7cc] bg-white p-4">
                   <img src="/projects/thermal/Extra/RC%20Car.jpeg" alt="Bristol Racing RC car project" className="max-h-[560px] w-full rounded-2xl object-contain" />
                 </div>
+                <p className="mt-3 text-sm leading-6 text-neutral-600">
+  Final RC car build showing the completed chassis, wheel layout, steering arrangement, electronics placement and drivetrain packaging after assembly and testing.
+</p>
               </section>
 
               <section className="rounded-3xl border border-[#e3d7cc] bg-white p-6">
@@ -1511,6 +1522,9 @@ export default function Home() {
                       playsInline
                       preload="metadata"
                     />
+                    <p className="mt-3 text-sm leading-6 text-neutral-600">
+                      Sound-control test: the lamp turns on and off when the sound sensor detects a click or clap, showing basic hands-free control through an Arduino input.
+                    </p>
                   </div>
                   <div className="overflow-hidden rounded-3xl border border-[#e3d7cc] bg-white p-3">
                     <video
@@ -1520,6 +1534,9 @@ export default function Home() {
                       playsInline
                       preload="metadata"
                     />
+                    <p className="mt-3 text-sm leading-6 text-neutral-600">
+                      Motion-sensor test: the lamp reacts when the PIR sensor detects movement, switching the light on and off automatically based on nearby motion.
+                    </p>
                   </div>
                 </div>
               </section>
