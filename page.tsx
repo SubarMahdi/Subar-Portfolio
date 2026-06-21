@@ -583,7 +583,7 @@ export default function Home() {
                 </span>
               </div>
               <p className="mt-6 font-mono text-xs uppercase tracking-[0.14em] text-neutral-400">
-                Sep 2025 · Present
+                Sep 2025 · May 2026
               </p>
               <h3 className="mt-3 font-serif text-3xl leading-tight">
                 RC Car
