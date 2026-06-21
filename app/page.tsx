@@ -16,6 +16,25 @@ export default function Home() {
     };
   }, [activeModal]);
 
+  const scrollToAcademic = () => {
+    const section = document.getElementById("academic");
+
+    if (!section) {
+      window.location.href = "/#academic";
+      return;
+    }
+
+    const offset = 88;
+    const top = section.getBoundingClientRect().top + window.scrollY - offset;
+
+    window.scrollTo({
+      top,
+      behavior: "smooth",
+    });
+
+    window.history.replaceState(null, "", "#academic");
+  };
+
   const [thermalMediaIndex, setThermalMediaIndex] = useState(0);
   const softwareTools = [
     {
@@ -212,13 +231,27 @@ export default function Home() {
 
           <div className="mt-14 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:max-w-xl">
             <a
-              href="/#academic"
-              className="flex min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90"
+              href="#academic"
+              className="hidden min-h-20 w-full items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90 sm:flex"
             >
               View
               <br />
               Projects
             </a>
+
+            <button
+              type="button"
+              onClick={scrollToAcademic}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                scrollToAcademic();
+              }}
+              className="flex min-h-20 w-full touch-manipulation items-center justify-center rounded-md bg-[#1d1b18] px-8 py-4 text-center text-lg font-semibold leading-tight text-white transition hover:opacity-90 sm:hidden"
+            >
+              View
+              <br />
+              Projects
+            </button>
 
             <a
               href="/cv.pdf"
