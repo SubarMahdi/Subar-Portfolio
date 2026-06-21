@@ -510,7 +510,7 @@ export default function Home() {
                       className="max-h-[560px] w-full bg-black object-contain"
                       controls
                       playsInline
-                      preload="metadata"
+                      preload="auto"
                     />
                   )}
                 </div>
@@ -1267,23 +1267,23 @@ export default function Home() {
                 </p>
 
                 <div className="mt-5 rounded-3xl border border-[#e3d7cc] bg-white p-4">
-                  <div className="overflow-hidden rounded-2xl bg-[#f7f2eb]">
-                    {thermalMedia[thermalMediaIndex].type === "image" ? (
-                      <img
-                        src={thermalMedia[thermalMediaIndex].src}
-                        alt={thermalMedia[thermalMediaIndex].alt}
-                        className="max-h-[520px] w-full object-contain"
-                      />
-                    ) : (
-                      <video
-                        src={thermalMedia[thermalMediaIndex].src}
-                        className="max-h-[520px] w-full bg-black object-contain"
-                        controls
-                        playsInline
-                        preload="metadata"
-                      />
-                    )}
-                  </div>
+                 <div className="overflow-hidden rounded-2xl bg-[#f7f2eb]">
+                   {thermalMedia[thermalMediaIndex].type === "image" ? (
+                     <img
+                       src={thermalMedia[thermalMediaIndex].src}
+                       alt={thermalMedia[thermalMediaIndex].alt}
+                       className="max-h-[520px] w-full object-contain"
+                     />
+                   ) : (
+                     <video
+                       src={thermalMedia[thermalMediaIndex].src}
+                       className="max-h-[520px] w-full bg-black object-contain"
+                       controls
+                       playsInline
+                       preload="auto"
+                     />
+                   )}
+                 </div>
 
                   <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
                     {thermalMedia.map((item, index) => (
