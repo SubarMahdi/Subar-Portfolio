@@ -1,126 +1,101 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const navItems = [
+    ["about", "About"], ["education", "Education"], ["crob", "Internship"],
+    ["academic", "Academic"], ["beyond", "Beyond"], ["research", "Research"],
+    ["skills", "Skills"], ["experience", "Roles"], ["contact", "Contact"],
+  ];
   useEffect(() => {
-    if (activeModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+    if (!menuOpen) return;
+    function dismiss(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
     }
-
+    function outside(event: PointerEvent) {
+      if (!navRef.current?.contains(event.target as Node)) setMenuOpen(false);
+    }
+    const wide = window.matchMedia("(min-width: 1280px)");
+    function resize() { if (wide.matches) setMenuOpen(false); }
+    document.addEventListener("keydown", dismiss);
+    document.addEventListener("pointerdown", outside);
+    wide.addEventListener("change", resize);
     return () => {
-      document.body.style.overflow = "";
+      document.removeEventListener("keydown", dismiss);
+      document.removeEventListener("pointerdown", outside);
+      wide.removeEventListener("change", resize);
+    };
+  }, [menuOpen]);
+  useEffect(() => {
+    if (!activeModal) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const panel = document.querySelector<HTMLElement>("[data-portfolio-dialog]");
+    const main = document.querySelector("main");
+    const scrollY = window.scrollY;
+    const previousStyle = document.body.getAttribute("style");
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    if (main) main.inert = true;
+    panel?.querySelector<HTMLButtonElement>('button[aria-label^="Close"]')?.focus();
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setActiveModal(null);
+      if (event.key !== "Tab" || !panel) return;
+      const items = Array.from(panel.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), video[controls], [tabindex="0"]'
+      )).filter(item => item.getClientRects().length > 0);
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault(); last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault(); first?.focus();
+      }
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      if (previousStyle === null) document.body.removeAttribute("style");
+      else document.body.setAttribute("style", previousStyle);
+      if (main) main.inert = false;
+      window.scrollTo(0, scrollY);
+      previousFocus?.focus({ preventScroll: true });
     };
   }, [activeModal]);
 
-
   const [thermalMediaIndex, setThermalMediaIndex] = useState(0);
   const softwareTools = [
-    {
-      name: "Fusion 360",
-      icon: "https://cdn.simpleicons.org/autodesk/0696D7",
-      fallback: "F360",
-    },
-    {
-      name: "Inventor",
-      icon: "https://cdn.simpleicons.org/autodesk/0696D7",
-      fallback: "INV",
-    },
-    {
-      name: "Arduino IDE",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg",
-      fallback: "∞",
-    },
-    {
-      name: "MATLAB",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matlab/matlab-original.svg",
-      fallback: "M",
-    },
-    {
-      name: "Excel",
-      icon: "https://cdn.simpleicons.org/microsoftexcel/217346",
-      fallback: "X",
-    },
-    {
-      name: "Python",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
-      fallback: "Py",
-    },
-    {
-      name: "GitHub",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
-      fallback: "GH",
-    },
-    {
-      name: "LaTeX",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/latex/latex-original.svg",
-      fallback: "TeX",
-    },
-    {
-      name: "VS Code",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg",
-      fallback: "VS",
-    },
-    {
-      name: "Next.js",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
-      fallback: "N",
-    },
-    {
-      name: "TypeScript",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-      fallback: "TS",
-    },
-    {
-      name: "OpenRocket",
-      icon: "",
-      fallback: "🚀",
-    },
-    {
-      name: "ROS 2",
-      icon: "https://cdn.simpleicons.org/ros/22314E",
-      fallback: "ROS",
-    },
-    {
-      name: "Linux",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",
-      fallback: "LX",
-    },
-    {
-      name: "Jupyter",
-      icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg",
-      fallback: "J",
-    },
-    {
-      name: "Google Colab",
-      icon: "https://cdn.simpleicons.org/googlecolab/F9AB00",
-      fallback: "GC",
-    },
-    {
-      name: "ANSYS",
-      icon: "",
-      fallback: "A",
-    },
-    {
-      name: "SolidWorks",
-      icon: "https://cdn.simpleicons.org/dassaultsystemes/005386",
-      fallback: "SW",
-    },
-    {
-      name: "LTspice",
-      icon: "",
-      fallback: "LT",
-    },
-    {
-      name: "Multisim",
-      icon: "https://cdn.simpleicons.org/ni/00A3E0",
-      fallback: "NI",
-    },
+    { name: "Fusion 360 — Beginner" },
+    { name: "Autodesk Inventor — Beginner" },
+    { name: "ROS 2 Workflows — Introductory Exposure" },
+    { name: "Arduino IDE — Arduino Project Exposure" },
+    { name: "Excel" },
   ];
 
+  const [crobMediaIndex, setCrobMediaIndex] = useState(0);
+  const [crobMediaError, setCrobMediaError] = useState(false);
+  const crobMedia = [
+    { type: "image", src: "/projects/thermal/Crob/gripper-v2-cad.jpeg", title: "CAD / Design", caption: "The V2 assembly in Fusion 360: a simplified manual two-jaw mechanism, developed as a practical CAD and prototyping exercise." },
+    { type: "image", src: "/projects/thermal/Crob/Gripper%20v1%20(1).jpeg", title: "V1 / Physical prototype", caption: "The first 3D-printed gripper prototype, connecting the design with a physical assembly and manual jaw movement." },
+    { type: "image", src: "/projects/thermal/Crob/Gripper%20v2%20(1).jpeg", title: "V2 / Robotics lab", caption: "The revised manual gripper shown alongside Spot. The prototype was a separate design exercise, not a production Spot end-effector or an autonomous gripper." },
+    { type: "video", src: "/projects/thermal/Crob/Me%20Controlling%20Robot%20(1).mp4", title: "Hands-on / Robot interaction", caption: "Hands-on robot interaction during the internship, complementing the gripper design and prototyping work. The lab experience also introduced the ROS 2 communication and NVIDIA Isaac simulation context behind wider robotics workflows." },
+  ];
+  function selectCrobMedia(index: number) {
+    setCrobMediaIndex(index);
+    setCrobMediaError(false);
+  }
+  function openCrobMedia(index: number) {
+    selectCrobMedia(index);
+    setActiveModal("crob");
+  }
   const thermalMedia = [
     {
       type: "video",
@@ -136,45 +111,129 @@ export default function Home() {
 
   return (
     <>
-      <main className="min-h-screen bg-[#f7f2eb] text-[#1d1b18]">
-      <nav className="fixed left-0 top-0 z-50 w-full border-b border-[#e5ddd3] bg-[#f7f2eb]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-5">
-          <a href="#" className="font-serif text-2xl tracking-tight">
-            SM<span className="text-[#b57967]">✦</span>
-          </a>
+      <style>{`
+/* Each ball rotates around the centre of its matching ring. */
+@keyframes heroOrbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.hero-orbit {
+  transform-origin: center;
+  animation: heroOrbit 32s linear infinite;
+}
+.hero-orbit-outer { animation-delay: -5s; }
+.hero-orbit-middle {
+  animation-duration: 25s;
+  animation-direction: reverse;
+  animation-delay: -16s;
+}
+.hero-orbit-inner {
+  animation-duration: 19s;
+  animation-delay: -7s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit { animation: none; }
+  .hero-orbit-outer { transform: rotate(55deg); }
+  .hero-orbit-middle { transform: rotate(230deg); }
+  .hero-orbit-inner { transform: rotate(130deg); }
+}
 
-          <div className="hidden gap-8 text-xs font-semibold uppercase tracking-[0.22em] text-neutral-500 md:flex">
-            <a href="#about">About</a>
-            <a href="#academic">Academic</a>
-            <a href="#beyond">Beyond</a>
-            <a href="#research">Research</a>
-            <a href="#skills">Skills</a>
-            <a href="#experience">Roles</a>
-            <a href="#contact">Contact</a>
+/* Responsive layout stays alongside the page for reliable preview updates. */
+.portfolio-main > section[id], #thermal-build-media { scroll-margin-top: 100px; }
+.portfolio-main :is(h2,h3,h4,p,li), [data-portfolio-dialog] :is(h3,p,li) { overflow-wrap: break-word; }
+.portfolio-main .grid > *, [data-portfolio-dialog] .grid > * { min-width: 0; }
+.portfolio-main button, [data-portfolio-dialog] button { min-height: 44px; }
+.portfolio-main a[class*="rounded"], [data-portfolio-dialog] a[class*="rounded"] { min-height: 44px; }
+.portfolio-main :is(a,button):focus-visible, [data-portfolio-dialog] :is(a,button,video):focus-visible {
+  outline: 3px solid #527998; outline-offset: 3px;
+}
+.portfolio-nav-link { display: inline-flex; align-items: center; min-height: 44px; }
+.mobile-menu { max-height: calc(100dvh - 84px); overflow-y: auto; overscroll-behavior: contain; }
+[data-portfolio-dialog] { max-height: calc(100dvh - 48px); overscroll-behavior: contain; }
+[data-portfolio-dialog] video { max-width: 100%; }
+.portfolio-hero { min-height: 100svh; padding-bottom: 88px; }
+.hero-art { position: absolute; inset: 0; pointer-events: none; }
+@media (max-width: 1023px) {
+  .hero-art { opacity: .38; }
+  #about img { height: auto; max-height: 560px; }
+}
+@media (max-width: 767px) {
+  .portfolio-main > section { padding-left: 20px; padding-right: 20px; }
+  .portfolio-main > section[id] { padding-top: 64px; padding-bottom: 64px; }
+  .portfolio-main > section h2 { font-size: clamp(2rem, 8.5vw, 2.75rem); line-height: 1.12; }
+  .portfolio-main > section h3 { font-size: 1.65rem; line-height: 1.25; }
+  .portfolio-main article { padding-left: 20px; padding-right: 20px; }
+  #crob article, #academic article { padding: 0; }
+  #crob article > div, #academic article > div { padding: 24px 20px; }
+  #about .grid { gap: 32px; }
+  #about .grid.grid-cols-2 { gap: 0; }
+  .portfolio-hero { padding-top: 128px; padding-bottom: 56px; }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-art { left: 40%; opacity: .22; }
+  .hero-content > p:first-child { font-size: 10px; letter-spacing: .18em; }
+  .hero-content > div:first-of-type span { font-size: 10px; letter-spacing: .09em; }
+  .hero-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hero-actions a { width: 100%; padding-left: 10px; padding-right: 10px; }
+  .portfolio-modal-backdrop { padding: 12px; }
+  [data-portfolio-dialog] { max-height: calc(100dvh - 24px); border-radius: 20px; }
+  [data-portfolio-dialog] > div { padding: 20px; }
+  [data-portfolio-dialog] > div:first-child { gap: 12px; }
+  [data-portfolio-dialog] h3 { font-size: 1.4rem; line-height: 1.25; }
+  [data-portfolio-dialog] button[aria-label^="Close"] { margin-left: 0; }
+  [data-portfolio-dialog] figure img, [data-portfolio-dialog] figure video { min-height: 0; }
+  #skills .animate-marquee { animation: none; width: 100%; flex-wrap: wrap; gap: 8px; }
+  #skills [data-duplicate="true"] { display: none; }
+  #skills .animate-marquee > div { max-width: 100%; white-space: normal; padding: 10px 14px; }
+  #skills .animate-marquee span { font-size: 10px; line-height: 1.6; letter-spacing: .08em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; width: 100%; flex-wrap: wrap; }
+  #skills [data-duplicate="true"] { display: none; }
+}
+      `}</style>
+      <main id="main-content" className="portfolio-main min-h-screen bg-[#f7f2eb] text-[#1d1b18]">
+      <nav ref={navRef} aria-label="Main navigation" className="fixed left-0 top-0 z-50 w-full border-b border-[#e5ddd3] bg-[#f7f2eb]/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+          <a href="#" aria-label="Subar Mahdi home" className="portfolio-nav-link shrink-0 font-serif text-2xl tracking-tight">SM<span className="text-[#b57967]">✦</span></a>
+          <div className="hidden gap-8 text-xs font-semibold uppercase tracking-[0.22em] text-neutral-600 xl:flex">
+            {navItems.map(([id, label]) => <a key={id} className="portfolio-nav-link" href={`#${id}`}>{label}</a>)}
           </div>
-
-          <a
-            href="/Subar___Final_CV.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-xl border border-[#ded3c7] px-4 py-2 text-sm font-semibold"
-          >
-            CV ↗
-          </a>
+          <div className="flex items-center gap-3">
+            <a href="/Subar___Final_CV.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-xl border border-[#ded3c7] px-4 py-2 text-sm font-semibold">CV ↗</a>
+            <button ref={menuButtonRef} type="button" aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl border border-[#ded3c7] px-4 py-2 text-sm font-semibold xl:hidden">{menuOpen ? "Close menu" : "Menu ☰"}</button>
+          </div>
         </div>
+        {menuOpen && (
+          <div id="mobile-navigation" className="mobile-menu border-t border-[#e5ddd3] bg-[#f7f2eb] px-5 py-4 shadow-lg xl:hidden">
+            <div className="mx-auto grid max-w-3xl grid-cols-2 gap-2">
+              {[...navItems, ["testimonials", "Testimonial"]].map(([id, label]) => (
+                <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)} className="portfolio-nav-link rounded-xl px-4 py-3 text-sm font-semibold text-neutral-700 hover:bg-[#ead4cd]">{label}</a>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
 
-      <section className="relative flex min-h-screen items-center overflow-hidden px-8 pt-24">
+      <section className="portfolio-hero relative flex min-h-screen items-center overflow-hidden px-8 pt-24">
+        <div className="hero-art" aria-hidden="true">
         <div className="pointer-events-none absolute right-[-170px] top-[120px] h-[720px] w-[720px] rounded-full border border-[#c89484]/30" />
         <div className="pointer-events-none absolute right-[-90px] top-[200px] h-[560px] w-[560px] rounded-full border border-[#c89484]/25" />
         <div className="pointer-events-none absolute right-[-10px] top-[280px] h-[400px] w-[400px] rounded-full border border-[#c89484]/25" />
         <div className="pointer-events-none absolute right-[90px] top-[380px] h-[230px] w-[230px] rounded-full border border-[#c89484]/35" />
 
-        <div className="pointer-events-none absolute right-[75px] top-[235px] h-10 w-10 animate-pulse rounded-full bg-[#b57967] shadow-xl" />
-        <div className="pointer-events-none absolute right-[330px] top-[430px] h-6 w-6 animate-bounce rounded-full bg-[#82a9c9] shadow-lg" />
-        <div className="pointer-events-none absolute right-[-5px] top-[670px] h-8 w-8 animate-pulse rounded-full bg-[#caa36b] shadow-lg" />
+        <div aria-hidden="true" className="pointer-events-none absolute right-[-170px] top-[120px] h-[720px] w-[720px] hero-orbit hero-orbit-outer">
+          <span className="absolute left-1/2 top-0 h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#b57967] shadow-xl" />
+        </div>
+        <div aria-hidden="true" className="pointer-events-none absolute right-[-90px] top-[200px] h-[560px] w-[560px] hero-orbit hero-orbit-middle">
+          <span className="absolute left-1/2 top-0 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#82a9c9] shadow-lg" />
+        </div>
+        <div aria-hidden="true" className="pointer-events-none absolute right-[-10px] top-[280px] h-[400px] w-[400px] hero-orbit hero-orbit-inner">
+          <span className="absolute left-1/2 top-0 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#caa36b] shadow-lg" />
+        </div>
 
-        <div className="mx-auto w-full max-w-6xl">
+        </div>
+
+        <div className="hero-content mx-auto w-full max-w-6xl">
           <p className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b57967]">
             <span className="h-px w-10 bg-[#b57967]" />
             Engineering · Research · Physical Systems
@@ -187,37 +246,25 @@ export default function Home() {
           </h1>
 
           <p className="mt-7 max-w-2xl text-xl leading-8 text-neutral-600">
-            Designing, building and understanding real-world engineered systems.
+            Mechanical with Electrical Engineering Student
           </p>
 
           <div className="mt-8 flex max-w-4xl flex-wrap gap-3">
             <span className="rounded-full bg-[#18324a] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9bb8d1]">
-              USP São Paulo · Robotics Internship
+              USP Center for Robotics — CRob
             </span>
 
             <span className="rounded-full bg-[#ead4cd] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">
-              Formula Student
-            </span>
-
-            <span className="rounded-full bg-[#ead4cd] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">
-              Rocketry Systems Engineer
-            </span>
-
-            <span className="rounded-full border border-[#ded3c7] bg-white/70 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600">
               Research Collaboration
-            </span>
-
-            <span className="rounded-full border border-[#ded3c7] bg-white/70 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600">
-              Former Programmatic Lead
             </span>
           </div>
 
-          <div className="mt-12 flex w-full flex-wrap gap-4">
+          <div className="hero-actions mt-12 flex w-full flex-wrap gap-4">
             <a
-              href="#academic"
+              href="#crob"
               className="flex h-14 w-44 items-center justify-center rounded-md bg-[#1d1b18] px-6 text-center text-sm font-semibold text-white transition duration-300 hover:opacity-90"
             >
-              View Projects
+              Explore Internship
             </a>
             <a
               href="/Subar___Final_CV.pdf"
@@ -249,7 +296,7 @@ export default function Home() {
         id="about"
         className="min-h-screen border-t border-[#e5ddd3] bg-[#f7f2eb] px-8 py-28"
       >
-        <div className="mx-auto grid max-w-6xl gap-16 md:grid-cols-[1.1fr_0.9fr]">
+        <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <p className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b57967]">
               <span className="h-px w-10 bg-[#b57967]" />
@@ -263,45 +310,11 @@ export default function Home() {
             </h2>
 
             <div className="mt-10 space-y-7 text-lg leading-9 text-neutral-700">
-              <p>
-                I came to engineering through an unconventional route.
-              </p>
-
-              <p>
-                Before beginning my engineering studies, I spent over four years leading technical operations within global digital media organisations, working in fast-paced environments where reliability, analytical thinking and structured problem solving were essential.
-              </p>
-
-              <p>
-                Managing large-scale systems taught me how complex technologies succeed or fail.
-              </p>
-
-              <p>
-                That experience ultimately pushed me toward engineering: a field where I could move closer to the physical systems, mechanisms, electronics and design decisions behind real-world technology.
-              </p>
-
-              <p>
-                My interests sit across mechanical systems, electronics, software-aware design, control systems, robotics, product development and applied research.
-              </p>
-
-              <p>
-                Rather than specialising too early, I am focused on becoming a multidisciplinary engineer who understands how complete systems are designed, integrated, tested and improved.
-              </p>
-
-              <p>
-                Over the past year, my work has spanned Formula Student vehicle
-                development, competitive rocketry feed systems, embedded sensing
-                projects, applied engineering research and an international internship
-                at the University of São Paulo. Across these experiences, I am learning
-                how requirements become hardware, how hardware becomes test data, and
-                how test data drives better engineering decisions.
-              </p>
-
-              <p>
-                My long-term goal is to become a full-stack physical engineer: someone
-                capable of working across mechanics, electronics, software and
-                intelligent systems to build advanced technologies that operate beyond
-                the boundaries of one discipline.
-              </p>
+              <p>I am drawn to engineering where ideas become physical systems: a mechanism that moves, a sensor that reveals something useful, or a prototype that improves through testing. My interests sit at the intersection of mechanical design, electronics and robotics.</p>
+              <p>That direction took me to USP Center for Robotics — CRob in São Carlos, Brazil, for a robotics internship. I worked on a manual two-jaw gripper, using Fusion 360 and 3D printing to connect CAD decisions with physical prototypes, alongside hands-on interaction with robots in the lab.</p>
+              <p>I value the work between an initial idea and a convincing result: understanding how parts fit, assembling a build, observing its behaviour and using evidence to decide what should change. My thermal monitoring, RC car and smart lamp projects have each developed a different part of that approach.</p>
+              <p>Research is another part of how I work. As a Junior Analyst with Bristol Academic Research Society, I contributed to a published scoping review on self-healing composites for satellite applications, developing my ability to assess technical literature and communicate findings clearly.</p>
+              <p>I am now studying Mechanical and Electrical Engineering with a Year in Industry at Cardiff University, following my completed Bristol foundation year. My ambition is to build the breadth and practical judgement to contribute across mechanical and electrical systems, with robotics as a central interest.</p>
             </div>
           </div>
 
@@ -316,9 +329,9 @@ export default function Home() {
 
             <div className="overflow-hidden rounded-2xl border border-[#e3d7cc] bg-white shadow-sm">
               <div className="bg-[#18324a] p-6 text-white">
-                <p className="font-serif text-2xl">Engineering Internship</p>
+                <p className="font-serif text-2xl">Cardiff University</p>
                 <p className="mt-2 text-xs uppercase tracking-[0.2em] text-white/60">
-                  University of São Paulo · Summer 2026
+                  BEng Mechanical and Electrical Engineering with a Year in Industry · 2026–present
                 </p>
               </div>
 
@@ -328,22 +341,22 @@ export default function Home() {
                     Physical Systems Engineering
                   </p>
                   <p className="mt-2 text-xs uppercase tracking-[0.18em] text-neutral-500">
-                    Mechanical · Electronics · Software-aware
+                    Mechanics · Electronics · Testing
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 divide-x divide-[#e3d7cc]">
                   <div className="p-6">
-                    <p className="font-serif text-4xl">3</p>
+                    <p className="font-serif text-4xl">4</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.18em] text-neutral-500">
                       Engineering Projects
                     </p>
                   </div>
 
                   <div className="p-6">
-                    <p className="font-serif text-4xl">2</p>
+                    <p className="font-serif text-4xl">1</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.18em] text-neutral-500">
-                      Research Programmes
+                      Published Review
                     </p>
                   </div>
                 </div>
@@ -351,12 +364,103 @@ export default function Home() {
                 <div className="p-6">
                   <p className="font-serif text-4xl">1</p>
                   <p className="mt-2 text-xs uppercase tracking-[0.18em] text-neutral-500">
-                    Internship
+                    Completed Internship
                   </p>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="education" className="scroll-mt-24 border-t border-[#e5ddd3] bg-[#fbf8f3] px-8 py-24">
+        <div className="mx-auto max-w-6xl">
+          <p className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b57967]"><span className="h-px w-10 bg-[#b57967]" />Education</p>
+          <h2 className="font-serif text-5xl leading-tight tracking-tight md:text-6xl">Education</h2>
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            <article className="rounded-[1.75rem] border border-[#e3d7cc] bg-white p-8 shadow-sm">
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#b57967]">Current · 2026–present</p>
+              <h3 className="mt-5 font-serif text-3xl">Cardiff University</h3>
+              <p className="mt-5 text-lg leading-8 text-neutral-700">BEng Mechanical and Electrical Engineering with a Year in Industry</p>
+            </article>
+            <article className="rounded-[1.75rem] border border-[#e3d7cc] bg-white p-8 shadow-sm">
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#b57967]">2025–2026 · CertHE completed</p>
+              <h3 className="mt-5 font-serif text-3xl">University of Bristol</h3>
+              <p className="mt-5 text-lg leading-8 text-neutral-700">Foundation Year in Science, Engineering and Mathematics</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="crob" className="scroll-mt-24 border-t border-[#e5ddd3] bg-[#f7f2eb] px-8 py-28">
+        <div className="mx-auto max-w-6xl">
+          <p className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b57967]">
+            <span className="h-px w-10 bg-[#b57967]" />Featured Experience · International Internship
+          </p>
+          <h2 className="font-serif text-5xl leading-tight tracking-tight md:text-6xl">Internship.<br /><span className="italic">From Design to the Lab.</span></h2>
+          <article className="mt-14 overflow-hidden rounded-[2rem] border border-[#e3d7cc] bg-white shadow-sm">
+            <div className="bg-[#18324a] p-8 text-white md:p-10">
+              <div className="flex flex-wrap items-start justify-between gap-6">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#9bb8d1]">Robotics Engineer Intern</p>
+                  <h3 className="mt-4 font-serif text-3xl leading-tight md:text-4xl">USP Center for Robotics — CRob</h3>
+                  <p className="mt-4 text-sm leading-7 text-white/70">São Carlos, Brazil · Jun 2026–Sep 2026</p>
+                </div>
+                <span className="rounded-full border border-white/20 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/80">Completed Internship</span>
+              </div>
+              <p className="mt-8 max-w-3xl text-lg leading-8 text-white/85">A three-month international robotics internship spanning gripper design, physical prototyping and hands-on robot interaction, with exposure to the ROS 2 and NVIDIA Isaac tools behind the lab’s robotics workflows.</p>
+            </div>
+            <div className="grid gap-10 p-8 lg:grid-cols-[1.05fr_0.95fr] md:p-10">
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#b57967]">Mechanical design &amp; prototyping</p>
+                <h4 className="mt-5 font-serif text-3xl leading-tight">From a CAD assembly<br /><span className="italic">to a working mechanism.</span></h4>
+                <div className="mt-6 space-y-5 text-base leading-8 text-neutral-700">
+                  <p>My practical design work centred on a simplified manual two-jaw gripper. I used Fusion 360 to model the assembly and developed physical versions through 3D printing, connecting digital geometry with the way parts fit and move in an assembled mechanism.</p>
+                  <p>The V1 and V2 prototypes provided a physical basis for exploring jaw movement, assembly and the relationship between component shape and function. Working between CAD and printed parts helped me understand why a mechanism needs to be assessed as a build, as well as a model.</p>
+                  <p>The gripper was a focused mechanical prototype within a much broader robotics environment. Seeing it alongside platforms such as Spot connected the design exercise with wider questions around robot hardware, manipulation and how mechanical components relate to a complete system.</p>
+                </div>
+              </div>
+              <div className="rounded-3xl border border-[#e3d7cc] bg-[#f7f2eb] p-6 md:p-8">
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#b57967]">Robot interaction &amp; lab workflows</p>
+                <h4 className="mt-5 font-serif text-3xl leading-tight">Understanding the system<br /><span className="italic">behind the movement.</span></h4>
+                <div className="mt-6 space-y-5 text-base leading-8 text-neutral-700">
+                  <p>Alongside prototyping, I took part in hands-on robot interaction in the lab. This brought the work beyond an isolated mechanism into an environment where operator input, robot movement and feedback form part of a larger control system.</p>
+                  <p>The interaction footage shows the physical side of that experience. Behind a robot’s visible response are software interfaces that pass instructions to the control system and make information about its state available. My exposure to ROS 2 helped place that relationship between commands, movement and feedback in context.</p>
+                  <p>ROS 2 and NVIDIA Isaac formed part of the wider technical environment. Encountering these tools alongside physical robots introduced me to how communication, simulation and hardware operation support robotics development.</p>
+                </div>
+              </div>
+            </div>
+            <div className="border-t border-[#e3d7cc] px-8 py-8 md:px-10">
+              <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#b57967]">Technical context · ROS 2 &amp; NVIDIA Isaac</p>
+              <div className="mt-6 grid gap-8 md:grid-cols-2">
+                <div>
+                  <h4 className="font-serif text-2xl">Connecting commands and feedback</h4>
+                  <p className="mt-4 text-base leading-8 text-neutral-700">ROS 2 provides a communication framework between parts of a robotics system. Software components exchange messages: topics can carry streams such as sensor readings or robot-state information, while command interfaces request behaviour. This helps explain how an operator interface, control software and feedback can work together during robot interaction.</p>
+                </div>
+                <div>
+                  <h4 className="font-serif text-2xl">Simulation alongside physical hardware</h4>
+                  <p className="mt-4 text-base leading-8 text-neutral-700">NVIDIA Isaac provides tools for robotics simulation. In a ROS-connected simulation, robot-state and sensor information can be exchanged with external robotics software, and commands can be sent back to a simulated robot. This was part of the wider background to the lab work, giving context to the relationship between virtual environments and physical platforms.</p>
+                </div>
+              </div>
+              <p className="mt-6 text-sm leading-7 text-neutral-600">My contribution combined CAD and physical prototyping with hands-on robot interaction; my experience of the supporting robotics software was introductory exposure within the lab.</p>
+            </div>
+            <div className="border-t border-[#e3d7cc] bg-[#f7f2eb] px-8 py-8 md:px-10">
+              <h4 className="font-serif text-2xl">What the internship developed</h4>
+              <p className="mt-4 max-w-4xl text-base leading-8 text-neutral-700">Across the three months, I connected mechanical design and manufacturing with the wider operation of robotic systems. The experience developed my practical understanding of CAD-to-prototype work, gave me direct contact with research-lab robotics and strengthened my interest in the interaction between mechanics, electronics and control.</p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["Fusion 360 CAD", "3D Printing & Assembly", "Robot Interaction", "ROS 2 Exposure", "Simulation Context"].map((tag) => (
+                  <span key={tag} className="rounded-md border border-[#ded3c7] bg-white px-3 py-2 font-mono text-xs uppercase tracking-[0.1em] text-neutral-500">{tag}</span>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col justify-between gap-6 border-t border-[#e3d7cc] bg-[#fbf8f3] p-8 md:flex-row md:items-center md:px-10">
+              <div><p className="font-serif text-2xl">Explore the work</p><p className="mt-2 text-sm leading-6 text-neutral-600">3 images · 1 video · CAD → V1 → V2 → lab interaction</p></div>
+              <div className="flex flex-wrap gap-3">
+                <button type="button" onClick={() => openCrobMedia(0)} className="rounded-md bg-[#1d1b18] px-6 py-4 text-sm font-semibold text-white transition hover:opacity-90">View Project Gallery ↗</button>
+                <button type="button" onClick={() => openCrobMedia(3)} className="rounded-md border border-[#ded3c7] px-6 py-4 text-sm font-semibold transition hover:bg-white">Watch Lab Video ▷</button>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -417,7 +521,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="mt-10 grid gap-10 md:grid-cols-[1.05fr_0.95fr]">
+              <div className="mt-10 grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
                 <div className="space-y-6 text-lg leading-9 text-neutral-700">
                   <p className="italic text-neutral-500">
                     A low-cost temperature monitoring and alert system combining
@@ -453,7 +557,7 @@ export default function Home() {
                   <ul className="mt-6 space-y-4 text-sm leading-6 text-neutral-700">
                     <li>→ Built and tested an Arduino-based temperature monitoring prototype.</li>
                     <li>→ Integrated DS18B20 point sensing with AMG8833 thermal imaging.</li>
-                    <li>→ Developed threshold alert logic using LEDs and LCD feedback.</li>
+                    <li>→ Tested threshold alerts using LEDs and LCD feedback.</li>
                     <li>→ Collected experimental datasets for heating, cooling, stability and distance response.</li>
                     <li>→ Compared numerical sensor readings with visual thermal heatmaps.</li>
                     <li>→ Evaluated limitations including low 8×8 thermal resolution, distance sensitivity and prototype reliability.</li>
@@ -464,13 +568,13 @@ export default function Home() {
               <div className="mt-10 border-t border-[#e3d7cc] pt-7">
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href="/documents/temperature-sensor-dissertation.docx"
+                    href="/documents/Temperature-Sensor-Dissertation.docx"
                     className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600 transition hover:bg-[#f7f2eb]"
                   >
                     📄 Dissertation
                   </a>
                   <a
-                    href="/documents/temperature-sensor-poster.pptx"
+                    href="/documents/Temperature-sensor-Poster.pptx"
                     className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600 transition hover:bg-[#f7f2eb]"
                   >
                     📊 Poster
@@ -599,16 +703,9 @@ export default function Home() {
                 Mechanical Design · CAD · Packaging
               </p>
               <p className="mt-6 text-base leading-8 text-neutral-700">
-                Working on the mechanical and electrical development of a scaled racing car, including drivetrain packaging, steering concepts, CAD-based layout and manufacturing constraints for laser-cut and 3D-printed parts.
+                Worked on the mechanical and electrical development of a scaled racing car, including drivetrain packaging, steering concepts, CAD-based layout and manufacturing constraints for laser-cut and 3D-printed parts.
               </p>
               <div className="mt-8 flex flex-wrap gap-3 border-t border-[#e3d7cc] pt-6">
-                <button
-                  type="button"
-                  onClick={() => setActiveModal("bristol-racing")}
-                  className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600 transition hover:bg-[#f7f2eb]"
-                >
-                  📷 Media
-                </button>
                 <button
                   type="button"
                   onClick={() => setActiveModal("bristol-racing")}
@@ -628,7 +725,7 @@ export default function Home() {
                   Electromechanical
                 </span>
                 <span className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">
-                  Firmware
+                  Build Integration
                 </span>
               </div>
               <p className="mt-6 font-mono text-xs uppercase tracking-[0.14em] text-neutral-400">
@@ -638,57 +735,15 @@ export default function Home() {
                 Smart Lamp · Embedded Electromechanical System
               </h3>
               <p className="mt-3 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">
-                Arduino · Sensors · Firmware · Product-style build
+                Arduino · Sensors · Build Integration · Product-style build
               </p>
               <p className="mt-6 text-base leading-8 text-neutral-700">
-                Designed and built a smart lamp to develop practical intuition in embedded systems, electronics and system integration, moving beyond basic Arduino tutorials into debugging, wiring discipline and real-world product constraints.
+                Built and tested an Arduino-based smart lamp to develop practical understanding of sensor integration, LED responses, wiring and hardware troubleshooting.
               </p>
               <div className="mt-8 flex flex-wrap gap-3 border-t border-[#e3d7cc] pt-6">
                 <button
                   type="button"
                   onClick={() => setActiveModal("smart-lamp")}
-                  className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600 transition hover:bg-[#f7f2eb]"
-                >
-                  🎥 Media
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveModal("smart-lamp")}
-                  className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600 transition hover:bg-[#f7f2eb]"
-                >
-                  🔎 Full Project
-                </button>
-              </div>
-            </article>
-
-            <article className="w-full rounded-[1.75rem] border border-[#e3d7cc] bg-white p-6 shadow-sm sm:p-8">
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-md bg-[#ead4cd] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">
-                  Mechanical Design
-                </span>
-                <span className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">
-                  Actuation
-                </span>
-                <span className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">
-                  Ongoing
-                </span>
-              </div>
-              <p className="mt-6 font-mono text-xs uppercase tracking-[0.14em] text-neutral-400">
-                Ongoing
-              </p>
-              <h3 className="mt-3 font-serif text-3xl leading-tight">
-                Load-Bearing Linear Actuator
-              </h3>
-              <p className="mt-3 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">
-                Mechanical & Mechatronics System
-              </p>
-              <p className="mt-6 text-base leading-8 text-neutral-700">
-                Designing a single-axis load-bearing actuator to understand structural loading, motion transmission, actuation, stiffness, tolerances, backlash and practical mechanical reliability.
-              </p>
-              <div className="mt-8 border-t border-[#e3d7cc] pt-6">
-                <button
-                  type="button"
-                  onClick={() => setActiveModal("actuator")}
                   className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600 transition hover:bg-[#f7f2eb]"
                 >
                   🔎 Full Project
@@ -700,7 +755,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section
+<section
         id="research"
         className="relative overflow-hidden border-t border-[#1f3042] bg-[#243244] px-8 py-28 text-white"
       >
@@ -722,11 +777,11 @@ export default function Home() {
           <h2 className="font-serif text-5xl leading-tight tracking-tight md:text-6xl">
             Research & Scholarly Work
             <br />
-            <span className="italic">Active Papers · Technical Investigations</span>
+            <span className="italic">Published Review · Ongoing Research</span>
           </h2>
 
           <p className="mt-6 max-w-3xl text-lg leading-8 text-white/60">
-            Research spanning advanced materials, robotic data acquisition and physical AI systems, with multiple papers currently in development through academic and international research collaborations.
+            A completed materials scoping review and a separate ongoing robotics research collaboration, grounded in literature review and practical lab exposure.
           </p>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2">
@@ -736,16 +791,16 @@ export default function Home() {
                   Research Paper
                 </span>
                 <span className="rounded-md bg-white/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/60">
-                  In Progress
+                  Published
                 </span>
               </div>
 
               <h3 className="mt-7 font-serif text-3xl leading-tight text-white">
-                Multifunctional Self-Healing Composites for Satellite Structural Applications
+                Multifunctional Self-Healing Structural Composites for Load Bearing Satellite Applications: A Qualitative Scoping Review
               </h3>
 
               <p className="mt-6 text-base leading-8 text-white/65">
-                Literature review assessing mechanical performance and space-environment suitability of self-healing composite materials for satellite structures. Applying systems-level analysis to evaluate trade-offs in mass, durability, manufacturability and structural reliability under orbital thermal cycling, vacuum and radiation exposure.
+                Published qualitative scoping review of multifunctional self-healing structural composites for load bearing satellite applications. I contributed as a Junior Analyst, reviewing literature and helping communicate the material trade-offs and limitations identified in the review.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-2">
@@ -753,34 +808,35 @@ export default function Home() {
                   Materials Engineering
                 </span>
                 <span className="rounded-md border border-white/15 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/55">
-                  Structural Analysis
+                  Literature Review
                 </span>
                 <span className="rounded-md border border-white/15 px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/55">
-                  Spacecraft Design
+                  Satellite Applications
                 </span>
               </div>
 
               <p className="mt-10 font-mono text-sm leading-7 tracking-[0.14em] text-white/50">
-                Bristol Academic Research Society · Junior Researcher
+                Bristol Academic Research Society · Junior Analyst
               </p>
+              <div className="mt-6 flex flex-wrap gap-3"><a href="https://bristolressoc.com/Paper/2/" target="_blank" rel="noopener noreferrer" className="rounded-md border border-white/25 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">Read published paper ↗</a><button type="button" onClick={() => setActiveModal("resoc")} className="rounded-md border border-white/25 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">Review contribution</button></div>
             </article>
 
             <article className="rounded-[1.75rem] border border-white/10 bg-white/[0.06] p-8 shadow-sm backdrop-blur">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-md bg-white/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/60">
-                  In Progress
+                  Ongoing Research
                 </span>
                 <span className="rounded-md bg-white/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/60">
-                  Potential IEEE Publication
+                  Research Collaboration
                 </span>
               </div>
 
               <h3 className="mt-7 font-serif text-3xl leading-tight text-white">
-                Robotic Data Acquisition Platform for Physical AI and Autonomous Manipulation Research
+                Robotics Research Collaboration
               </h3>
 
               <p className="mt-6 text-base leading-8 text-white/65">
-                Engineering research contribution at the University of São Paulo focused on robotic data acquisition for learning-based manipulation. The project involves instrumented data capture, multi-sensor integration, calibration workflows and robotic demonstration datasets intended to support imitation learning, diffusion policy and vision-language-action research.
+                Ongoing research collaboration with USP Center for Robotics — CRob following my completed internship in São Carlos, Brazil. The research context connects robotic data acquisition, manipulation and the relationship between physical platforms and supporting software workflows. My internship experience combined gripper prototyping, robot interaction and introductory exposure to ROS 2 and NVIDIA Isaac in the lab.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-2">
@@ -796,7 +852,7 @@ export default function Home() {
               </div>
 
               <p className="mt-10 font-mono text-sm leading-7 tracking-[0.14em] text-white/50">
-                University of São Paulo · Engineering Internship
+                USP Center for Robotics — CRob · Ongoing collaboration
               </p>
             </article>
           </div>
@@ -824,6 +880,8 @@ export default function Home() {
             {[...softwareTools, ...softwareTools].map((tool, index) => (
               <div
                 key={`${tool.name}-${index}`}
+                data-duplicate={index >= softwareTools.length}
+                aria-hidden={index >= softwareTools.length ? true : undefined}
                 className="flex shrink-0 items-center rounded-full border border-[#e3d7cc] bg-[#fbf8f3] px-6 py-3 shadow-sm"
               >
                 <span className="font-mono text-xs uppercase tracking-[0.16em] text-neutral-500">
@@ -839,98 +897,26 @@ export default function Home() {
             [
               "Mechanical Design & Physical Systems",
               [
-                "Mechanical Design",
-                "Fusion 360",
-                "Autodesk Inventor",
-                "CAD Modelling",
-                "Design for Manufacture",
-                "3D Printing",
-                "Laser Cutting",
-                "Actuation Systems",
-                "Linear Motion",
-                "Load Paths",
-                "Tolerance Awareness",
+                "Basic CAD Modelling",
+                "3D Printing & Prototyping",
                 "Mechanical Assembly",
-                "Vehicle Packaging",
-                "Drivetrain Layout",
               ],
             ],
             [
-              "Electronics & Embedded Systems",
+              "Electronics & Testing",
               [
-                "Arduino",
-                "Embedded C/C++",
+                "Arduino Project Exposure",
                 "Sensor Integration",
-                "GPIO",
-                "PWM Control",
-                "MOSFET Switching",
-                "Hardware Debugging",
-                "Firmware Development",
-                "Thermal Sensors",
-                "LCD Integration",
-                "PIR Sensors",
-                "Signal Flow",
-                "Power Delivery",
-                "System Integration",
+                "Hardware Testing",
               ],
             ],
             [
-              "Systems Engineering & Research",
+              "Experimental Work & Research",
               [
-                "Systems Thinking",
-                "Trade-Off Analysis",
-                "Requirements Engineering",
-                "Technical Writing",
-                "Literature Reviews",
-                "Research Methods",
-                "Experimental Design",
+                "Experimental Testing",
                 "Data Acquisition",
-                "Test & Validation",
-                "Failure Mode Thinking",
-                "Sensor Fusion",
                 "Technical Reporting",
-                "Engineering Judgement",
-                "Evidence-Based Decision Making",
-              ],
-            ],
-            [
-              "Software, Analysis & Data",
-              [
-                "Python",
-                "MATLAB",
-                "Excel",
-                "Data Analysis",
-                "Data Visualisation",
-                "GitHub",
-                "LaTeX",
-                "Technical Documentation",
-                "Graphing",
-                "Numerical Analysis",
-                "Statistical Interpretation",
-                "Next.js",
-                "TypeScript",
-                "Version Control",
-              ],
-            ],
-            [
-              "Professional & Leadership Experience",
-              [
-                "Stakeholder Management",
-                "Cross-Functional Leadership",
-                "Project Coordination",
-                "Client Communication",
-                "Technical Problem Solving",
-                "Process Improvement",
-                "Operational Leadership",
-                "Commercial Awareness",
-                "Data-Driven Decision Making",
-                "Team Collaboration",
-                "Remote Team Management",
-                "Structured Communication",
-                "Presentation Skills",
-                "Strategic Planning",
-                "Ownership & Accountability",
-                "High-Pressure Delivery",
+                "Literature Review",
               ],
             ],
           ].map(([category, skills]) => (
@@ -962,10 +948,10 @@ export default function Home() {
         id="testimonials"
         className="border-t border-[#e5ddd3] bg-[#f7f2eb] px-8 py-20"
       >
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-6xl">
           <p className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b57967]">
             <span className="h-px w-10 bg-[#b57967]" />
-            Testimonial
+            Recommendations
           </p>
 
           <h2 className="font-serif text-4xl leading-tight tracking-tight md:text-5xl">
@@ -974,7 +960,8 @@ export default function Home() {
             <span className="italic">Have Said</span>
           </h2>
 
-          <div className="mt-10 border-l border-[#e3d7cc] pl-8">
+          <div className="mt-10 grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <figure className="m-0 border-l border-[#e3d7cc] pl-5 sm:pl-8">
             <p className="max-w-3xl font-serif text-lg italic leading-8 text-neutral-700 md:text-xl md:leading-9">
               “Subar has been highly motivated and enthusiastic in developing his engineering knowledge. He is well organised, determined and consistently willing to explore new ideas and challenges. His curiosity, work ethic and commitment to learning have stood out throughout his studies, and he approaches engineering problems with maturity, independence and a positive attitude.”
             </p>
@@ -985,6 +972,27 @@ export default function Home() {
                 Senior Lecturer in Power Electronics · University of Bristol
               </p>
             </div>
+          </figure>
+          <figure className="m-0 border-l border-[#e3d7cc] pl-5 sm:pl-8">
+            <blockquote className="font-serif text-lg italic leading-8 text-neutral-700 md:text-xl md:leading-9">
+              “Mr. Mahdi demonstrated curiosity, initiative and a willingness to engage with unfamiliar engineering problems. He approached practical work thoughtfully, sought to understand the reasoning behind technical decisions and showed a commitment to developing his knowledge through experience.”
+            </blockquote>
+            <figcaption className="mt-8">
+              <p className="font-semibold text-neutral-800">Marcelo Becker</p>
+              <p className="mt-1 font-mono text-[11px] uppercase leading-5 tracking-[0.14em] text-neutral-500">
+                Associate Professor · USP Center for Robotics — CRob
+              </p>
+              <a
+                href="/documents/Marcelo-Becker-Recommendation.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-[#18354a] bg-[#18354a] px-5 py-3 text-center text-sm font-semibold !text-white transition hover:bg-[#24465e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#18354a]"
+                aria-label="View Marcelo Becker’s letter of recommendation (PDF, opens in a new tab)"
+              >
+                View Letter of Recommendation <span aria-hidden="true">↗</span>
+              </a>
+            </figcaption>
+          </figure>
           </div>
         </div>
       </section>
@@ -1014,23 +1022,24 @@ export default function Home() {
                     Robotics Engineer Intern
                   </h3>
                   <p className="mt-1 text-sm font-semibold text-[#b57967]">
-                    USP · Universidade de São Paulo
+                    USP Center for Robotics — CRob
                   </p>
                   <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-500">
-                    On-site · São Paulo, Brazil · Internship
+                    On-site · São Carlos, Brazil · Completed internship
                   </p>
                 </div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">
-                  Jun 2026 · Present
+                  Jun 2026–Sep 2026
                 </p>
               </div>
 
               <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-700">
-                Contributing to the development of a robotic data acquisition platform for Physical AI and autonomous manipulation research. Designing and integrating an instrumented data glove to capture human demonstrations for robot learning applications, while working with multi-sensor systems including RGB-D cameras, IMUs, force sensing and motion-tracking technologies.
+                Completed a robotics internship focused on practical design and lab exposure. Worked on a simplified manual two-jaw gripper using Fusion 360 CAD and 3D-printed prototypes, developing an understanding of physical iteration and assembly.
               </p>
               <p className="mt-3 max-w-3xl text-base leading-7 text-neutral-700">
-                Supporting ROS 2-based workflows for data collection, calibration, sensor fusion and system integration. The work contributes to research involving imitation learning, diffusion policies and Vision-Language-Action models, with testing and validation on advanced robotic platforms including Boston Dynamics Spot and ANYmal. Potential publication outcomes include IEEE research outputs.
+                Took part in hands-on robot interaction and gained introductory exposure to ROS 2 workflows and NVIDIA Isaac within the lab environment, developing an understanding of how robot commands, feedback and simulation relate to physical systems. The research collaboration with CRob remains ongoing.
               </p>
+              <a href="#crob" className="mt-5 inline-flex text-sm font-semibold text-[#b57967] underline underline-offset-4">View gripper project and lab media ↗</a>
             </article>
 
             <article className="relative border-t border-[#e3d7cc] pt-9">
@@ -1053,7 +1062,7 @@ export default function Home() {
               </div>
 
               <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-700">
-                Worked on mechanical and electrical aspects of a scaled race car used for Formula Student. Focused on drivetrain and steering concepts, CAD-based packaging, wiring layouts and manufacturability considerations for laser-cut and 3D-printed parts. The role has developed practical judgement around how design choices affect assembly, tolerances, testing and physical reliability.
+                Worked on mechanical and electrical aspects of a scaled race car used for Formula Student. Focused on drivetrain and steering concepts, CAD-based packaging, wiring layouts and manufacturability considerations for laser-cut and 3D-printed parts. The role developed practical judgement around how design choices affect assembly, tolerances, testing and physical reliability.
               </p>
             </article>
 
@@ -1062,31 +1071,7 @@ export default function Home() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h3 className="font-serif text-2xl leading-tight md:text-3xl">
-                    Systems Engineer · Feed Systems
-                  </h3>
-                  <p className="mt-1 text-sm font-semibold text-[#b57967]">
-                    HyPower Bristol
-                  </p>
-                  <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-500">
-                    Rocketry · Pressurisation · Plumbing · P&IDs
-                  </p>
-                </div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">
-                  Sep 2025 · Jul 2026
-                </p>
-              </div>
-
-              <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-700">
-                Contributing to the design of pressurisation and feed systems for competitive rocketry projects. Producing P&IDs, modelling valves and tanks in CAD, performing basic pressure-drop calculations and coordinating routing with propulsion and avionics teams for safety-critical integration. This has strengthened my understanding of fluid systems, interfaces, operational risk and systems-level engineering constraints.
-              </p>
-            </article>
-
-            <article className="relative border-t border-[#e3d7cc] pt-9">
-              <span className="absolute -left-[33px] top-11 h-2 w-2 rounded-full bg-[#b57967] md:-left-[37px]" />
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-serif text-2xl leading-tight md:text-3xl">
-                    Junior Researcher · Engineering & Technology
+                    Junior Analyst · Engineering & Technology
                   </h3>
                   <p className="mt-1 text-sm font-semibold text-[#b57967]">
                     Bristol Academic Research Society · ResSoc
@@ -1101,34 +1086,7 @@ export default function Home() {
               </div>
 
               <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-700">
-                Conducting applied research into engineering and technology topics, producing structured written briefs and technical summaries. Focused on analysing complex systems, reviewing technical literature and communicating findings clearly to academic and student engineering audiences. Current work includes self-healing composites for satellite structural applications.
-              </p>
-            </article>
-
-            <article className="relative border-t border-[#e3d7cc] pt-9">
-              <span className="absolute -left-[33px] top-11 h-2 w-2 rounded-full bg-[#b57967] md:-left-[37px]" />
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-serif text-2xl leading-tight md:text-3xl">
-                    Programmatic Operations Lead
-                  </h3>
-                  <p className="mt-1 text-sm font-semibold text-[#b57967]">
-                    Various Global Media & Technology Organisations
-                  </p>
-                  <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-500">
-                    London Area · Technical Operations · Campaign Systems
-                  </p>
-                </div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">
-                  May 2021 · Oct 2025
-                </p>
-              </div>
-
-              <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-700">
-                Worked in technically intensive, high-pressure environments responsible for the reliable operation of large, complex systems supporting multi-million-pound campaigns in programmatic advertising. Focused on diagnosing system-level issues, analysing performance data, improving workflows and coordinating across technical teams to ensure stable, predictable outcomes.
-              </p>
-              <p className="mt-3 max-w-3xl text-base leading-7 text-neutral-700">
-                Regularly handled failure modes, edge cases and time-critical delivery problems, requiring structured problem solving and clear technical communication. This experience developed strong systems thinking, analytical discipline and operational leadership, which I now apply directly to mechanical design, electronics and engineering projects.
+                Contributed as a Junior Analyst to the completed and published qualitative scoping review of multifunctional self-healing structural composites for load bearing satellite applications. Reviewed technical literature and contributed to clear research summaries through Bristol Academic Research Society.
               </p>
             </article>
           </div>
@@ -1189,13 +1147,47 @@ export default function Home() {
         </div>
       </section>
       </main>
+      {activeModal === "crob" && (
+        <div className="portfolio-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm" onClick={() => setActiveModal(null)}>
+          <div data-portfolio-dialog tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="crob-gallery-title" className="max-h-[88vh] w-full max-w-5xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] text-[#1d1b18] shadow-2xl" onClick={(event) => event.stopPropagation()}>
+            <div className="sticky top-0 z-10 flex items-start justify-between gap-6 border-b border-[#e3d7cc] bg-[#fbf8f3]/95 p-6 backdrop-blur">
+              <div><p className="font-mono text-xs uppercase tracking-[0.14em] text-[#b57967]">USP Center for Robotics — CRob</p><h3 id="crob-gallery-title" className="mt-3 font-serif text-3xl">Design, prototypes &amp; lab experience</h3></div>
+              <button type="button" onClick={() => setActiveModal(null)} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl" aria-label="Close robotics gallery">×</button>
+            </div>
+            <div className="p-6 md:p-8">
+              <div className="mb-6 flex flex-wrap gap-2" aria-label="Choose project media">
+                {crobMedia.map((item, index) => (
+                  <button key={item.src} type="button" onClick={() => selectCrobMedia(index)} aria-pressed={index === crobMediaIndex} className={`rounded-md border px-3 py-2 text-sm transition ${index === crobMediaIndex ? "border-[#18324a] bg-[#18324a] text-white" : "border-[#ded3c7] bg-white text-neutral-600 hover:bg-[#ead4cd]"}`}>{index + 1}. {item.title}</button>
+                ))}
+              </div>
+              <figure>
+                <div className="overflow-hidden rounded-2xl border border-[#e3d7cc] bg-[#eee7df]">
+                  {crobMediaError ? (
+                    <div className="flex min-h-64 items-center justify-center p-8 text-center text-neutral-600"><p>This media could not be loaded. Please try another item.</p></div>
+                  ) : crobMedia[crobMediaIndex].type === "image" ? (
+                    <img key={crobMedia[crobMediaIndex].src} src={crobMedia[crobMediaIndex].src} alt={crobMedia[crobMediaIndex].caption} onError={() => setCrobMediaError(true)} className="max-h-[55vh] min-h-48 w-full object-contain" />
+                  ) : (
+                    <video key={crobMedia[crobMediaIndex].src} src={crobMedia[crobMediaIndex].src} aria-label={crobMedia[crobMediaIndex].title} onError={() => setCrobMediaError(true)} controls playsInline preload="metadata" className="max-h-[55vh] min-h-48 w-full bg-black object-contain" />
+                  )}
+                </div>
+                <figcaption className="mt-6" aria-live="polite"><p className="font-mono text-xs uppercase tracking-[0.16em] text-[#b57967]">{crobMediaIndex + 1} / {crobMedia.length} · {crobMedia[crobMediaIndex].title}</p><p className="mt-3 max-w-3xl text-base leading-8 text-neutral-700">{crobMedia[crobMediaIndex].caption}</p></figcaption>
+              </figure>
+              <div className="mt-6 flex justify-between gap-4 border-t border-[#e3d7cc] pt-6">
+                <button type="button" onClick={() => selectCrobMedia((crobMediaIndex + crobMedia.length - 1) % crobMedia.length)} className="rounded-md border border-[#ded3c7] px-4 py-3 text-sm hover:bg-white">← Previous</button>
+                <button type="button" onClick={() => selectCrobMedia((crobMediaIndex + 1) % crobMedia.length)} className="rounded-md border border-[#ded3c7] px-4 py-3 text-sm hover:bg-white">Next →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {activeModal === "thermal" && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
+          className="portfolio-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
           onClick={() => setActiveModal(null)}
         >
           <div
-            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] shadow-2xl"
+            data-portfolio-dialog tabIndex={-1} role="dialog" aria-modal="true" aria-label="Thermal monitoring case study"
+            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] text-[#1d1b18] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 z-10 flex items-start justify-between border-b border-[#e3d7cc] bg-[#fbf8f3]/95 p-6 backdrop-blur">
@@ -1224,7 +1216,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setActiveModal(null)}
-                className="ml-6 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]"
+                className="ml-6 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]"
                 aria-label="Close case study"
               >
                 ×
@@ -1249,7 +1241,7 @@ export default function Home() {
 
                 <ul className="mt-4 space-y-4 text-base leading-8 text-neutral-700">
                   <li>→ Built a baseline Arduino system using a DS18B20 digital temperature sensor to collect point temperature readings.</li>
-                  <li>→ Programmed threshold logic so the system changed state when readings exceeded 30°C, using green and red LEDs for normal and warning conditions.</li>
+                  <li>→ Built and tested the threshold-alert system: readings above 30°C triggered a red warning LED, while a green LED indicated readings below the threshold.</li>
                   <li>→ Added an LCD display so live temperature values and system states could be read directly from the prototype rather than only through the serial monitor.</li>
                   <li>→ Integrated an AMG8833 8×8 infrared thermal camera to collect 64 spatial temperature readings across the field of view.</li>
                   <li>→ Used laptop-based thermal visualisation to turn the AMG8833 readings into heatmaps for room temperature, human heat, hot object and cold object tests.</li>
@@ -1340,7 +1332,7 @@ export default function Home() {
 
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                   <div className="rounded-2xl border border-[#e3d7cc] bg-white p-5 text-sm leading-7 text-neutral-700">
-                    Sensor fusion can make a simple monitoring system more useful by combining reliable point measurements with broader spatial context.
+                    Combining complementary sensors can make a simple monitoring system more useful by combining reliable point measurements with broader spatial context.
                   </div>
                   <div className="rounded-2xl border border-[#e3d7cc] bg-white p-5 text-sm leading-7 text-neutral-700">
                     Low-cost thermal hardware needs careful testing because resolution, wiring reliability, calibration and distance all affect system performance.
@@ -1367,13 +1359,13 @@ export default function Home() {
               <section className="border-t border-[#e3d7cc] pt-6">
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href="/documents/temperature-sensor-dissertation.docx"
+                    href="/documents/Temperature-Sensor-Dissertation.docx"
                     className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600 transition hover:bg-white"
                   >
                     📄 Dissertation
                   </a>
                   <a
-                    href="/documents/temperature-sensor-poster.pptx"
+                    href="/documents/Temperature-sensor-Poster.pptx"
                     className="rounded-md border border-[#ded3c7] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-600 transition hover:bg-white"
                   >
                     📊 Poster
@@ -1387,11 +1379,12 @@ export default function Home() {
 
       {activeModal === "bristol-racing" && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
+          className="portfolio-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
           onClick={() => setActiveModal(null)}
         >
           <div
-            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] shadow-2xl"
+            data-portfolio-dialog tabIndex={-1} role="dialog" aria-modal="true" aria-label="RC car project"
+            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] text-[#1d1b18] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 z-10 flex items-start justify-between border-b border-[#e3d7cc] bg-[#fbf8f3]/95 p-6 backdrop-blur">
@@ -1404,7 +1397,7 @@ export default function Home() {
                 <h3 className="mt-5 font-serif text-3xl leading-tight md:text-4xl">RC Car</h3>
                 <p className="mt-2 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">Mechanical Design · CAD · Packaging</p>
               </div>
-              <button type="button" onClick={() => setActiveModal(null)} className="ml-6 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]" aria-label="Close Bristol Racing modal">×</button>
+              <button type="button" onClick={() => setActiveModal(null)} className="ml-6 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]" aria-label="Close Bristol Racing modal">×</button>
             </div>
 
             <div className="space-y-10 p-6 md:p-10">
@@ -1438,70 +1431,28 @@ export default function Home() {
         </div>
       )}
 
-      {activeModal === "hypower" && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
-          onClick={() => setActiveModal(null)}
-        >
-          <div
-            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-[#e3d7cc] bg-[#fbf8f3]/95 p-6 backdrop-blur">
-              <div>
-                <div className="flex flex-wrap gap-2">
-                  <span className="rounded-md bg-[#ead4cd] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">Rocketry</span>
-                  <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Feed Systems</span>
-                  <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Fluid Systems</span>
-                </div>
-                <h3 className="mt-5 font-serif text-3xl leading-tight md:text-4xl">HyPower Bristol · Feed Systems</h3>
-                <p className="mt-2 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">Pressurisation · Plumbing · Pressure Drop · Safety-Critical Integration</p>
-              </div>
-              <button type="button" onClick={() => setActiveModal(null)} className="ml-6 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]" aria-label="Close HyPower modal">×</button>
-            </div>
-
-            <div className="space-y-10 p-6 md:p-10">
-              <section>
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#b57967]">What I did</p>
-                <ul className="mt-4 space-y-4 text-base leading-8 text-neutral-700">
-                  <li>→ Reviewed previous plumbing CAD and system architecture to understand the feed system layout.</li>
-                  <li>→ Researched pressure losses through pipework, fittings, bends and valves.</li>
-                  <li>→ Studied Moody chart reasoning, friction factors and how pressure-drop calculations inform routing choices.</li>
-                  <li>→ Contributed to P&ID-style thinking around tanks, valves, feed lines and system interfaces.</li>
-                  <li>→ Considered safety-critical routing constraints with propulsion and avionics integration in mind.</li>
-                  <li>→ Supported concept thinking around quick-release refuelling and remote release requirements.</li>
-                </ul>
-              </section>
-
-              <section className="rounded-3xl border border-[#e3d7cc] bg-white p-6">
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#b57967]">Engineering value</p>
-                <p className="mt-4 text-lg leading-9 text-neutral-700">HyPower is valuable because it forces systems thinking. Fluid routing is not just calculation; it is pressure loss, safety, access, valves, team interfaces, manufacturability and operational risk all at once.</p>
-              </section>
-            </div>
-          </div>
-        </div>
-      )}
 
       {activeModal === "smart-lamp" && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
+          className="portfolio-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
           onClick={() => setActiveModal(null)}
         >
           <div
-            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] shadow-2xl"
+            data-portfolio-dialog tabIndex={-1} role="dialog" aria-modal="true" aria-label="Smart lamp project"
+            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] text-[#1d1b18] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 z-10 flex items-start justify-between border-b border-[#e3d7cc] bg-[#fbf8f3]/95 p-6 backdrop-blur">
               <div>
                 <div className="flex flex-wrap gap-2">
                   <span className="rounded-md bg-[#ead4cd] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">Embedded Systems</span>
-                  <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Firmware</span>
+                  <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Build Integration</span>
                   <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Electromechanical</span>
                 </div>
                 <h3 className="mt-5 font-serif text-3xl leading-tight md:text-4xl">Smart Lamp · Embedded Electromechanical System</h3>
-                <p className="mt-2 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">Arduino · Sensors · LEDs · Firmware · Hardware Debugging</p>
+                <p className="mt-2 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">Arduino · Sensors · LEDs · Build Integration · Hardware Debugging</p>
               </div>
-              <button type="button" onClick={() => setActiveModal(null)} className="ml-6 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]" aria-label="Close Smart Lamp modal">×</button>
+              <button type="button" onClick={() => setActiveModal(null)} className="ml-6 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]" aria-label="Close Smart Lamp modal">×</button>
             </div>
 
             <div className="space-y-10 p-6 md:p-10">
@@ -1509,10 +1460,10 @@ export default function Home() {
                 <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#b57967]">What I did</p>
                 <ul className="mt-4 space-y-4 text-base leading-8 text-neutral-700">
                   <li>→ Designed and assembled an embedded electronics system using a microcontroller, LED output, sensors, resistors and power supply.</li>
-                  <li>→ Wrote firmware to manage inputs, outputs, timing behaviour and system states.</li>
+                  <li>→ Integrated and tested Arduino-based sensor inputs and LED responses, observing timing and switching behaviour.</li>
                   <li>→ Worked with PIR and sound sensing concepts to explore interaction-based control.</li>
-                  <li>→ Used MOSFET-based switching and PWM thinking for LED control and dimming behaviour.</li>
-                  <li>→ Debugged hardware-software issues across wiring, code, power delivery and component choice.</li>
+                  <li>→ Explored LED switching and dimming behaviour as part of the Arduino-based build.</li>
+                  <li>→ Investigated build issues across wiring, sensor connections, power delivery and component choice.</li>
                   <li>→ Practised iterative engineering: build, test, diagnose, refine.</li>
                 </ul>
               </section>
@@ -1549,58 +1500,22 @@ export default function Home() {
 
               <section className="rounded-3xl border border-[#e3d7cc] bg-white p-6">
                 <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#b57967]">Engineering value</p>
-                <p className="mt-4 text-lg leading-9 text-neutral-700">The smart lamp helped bridge the gap between theoretical electronics and actual embedded behaviour. It developed practical understanding of GPIO, timing, signal flow, current limits, safe operation and end-to-end system ownership.</p>
+                <p className="mt-4 text-lg leading-9 text-neutral-700">The smart lamp helped bridge the gap between theoretical electronics and actual embedded behaviour. It developed practical understanding of sensor responses, wiring, current limits and iterative hardware testing.</p>
               </section>
             </div>
           </div>
         </div>
       )}
 
-      {activeModal === "actuator" && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
-          onClick={() => setActiveModal(null)}
-        >
-          <div
-            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sticky top-0 z-10 flex items-start justify-between border-b border-[#e3d7cc] bg-[#fbf8f3]/95 p-6 backdrop-blur">
-              <div>
-                <div className="flex flex-wrap gap-2">
-                  <span className="rounded-md bg-[#ead4cd] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">Mechanical Design</span>
-                  <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Actuation</span>
-                  <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Ongoing</span>
-                </div>
-                <h3 className="mt-5 font-serif text-3xl leading-tight md:text-4xl">Load-Bearing Single-Axis Linear Actuator</h3>
-                <p className="mt-2 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">Mechanical & Mechatronics System</p>
-              </div>
-              <button type="button" onClick={() => setActiveModal(null)} className="ml-6 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]" aria-label="Close actuator modal">×</button>
-            </div>
-
-            <div className="space-y-10 p-6 md:p-10">
-              <section>
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#b57967]">What I am building</p>
-                <ul className="mt-4 space-y-4 text-base leading-8 text-neutral-700">
-                  <li>→ Designing a single-axis linear motion system capable of supporting and moving load.</li>
-                  <li>→ Selecting and integrating actuation components suitable for load-bearing operation.</li>
-                  <li>→ Considering stiffness, structural behaviour, alignment, load paths and mechanical reliability.</li>
-                  <li>→ Understanding failure modes such as backlash, uneven loading, buckling and misalignment.</li>
-                  <li>→ Integrating basic control logic for direction, positioning and limit behaviour.</li>
-                </ul>
-              </section>
-            </div>
-          </div>
-        </div>
-      )}
 
       {activeModal === "resoc" && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
+          className="portfolio-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center bg-black/55 px-4 py-8 backdrop-blur-sm"
           onClick={() => setActiveModal(null)}
         >
           <div
-            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] shadow-2xl"
+            data-portfolio-dialog tabIndex={-1} role="dialog" aria-modal="true" aria-label="Published research contribution"
+            className="max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-[#fbf8f3] text-[#1d1b18] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 z-10 flex items-start justify-between border-b border-[#e3d7cc] bg-[#fbf8f3]/95 p-6 backdrop-blur">
@@ -1610,26 +1525,27 @@ export default function Home() {
                   <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Materials</span>
                   <span className="rounded-md border border-[#ded3c7] px-3 py-2 font-mono text-xs uppercase tracking-[0.14em] text-neutral-500">Satellite Structures</span>
                 </div>
-                <h3 className="mt-5 font-serif text-3xl leading-tight md:text-4xl">Research Society · Engineering & Technology</h3>
-                <p className="mt-2 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">Self-Healing Composites for Satellite Structural Applications</p>
+                <h3 className="mt-5 font-serif text-3xl leading-tight md:text-4xl">Bristol Academic Research Society · Engineering & Technology</h3>
+                <p className="mt-2 font-mono text-sm uppercase tracking-[0.14em] text-[#b57967]">Multifunctional Self-Healing Structural Composites for Load Bearing Satellite Applications: A Qualitative Scoping Review</p>
               </div>
-              <button type="button" onClick={() => setActiveModal(null)} className="ml-6 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]" aria-label="Close research modal">×</button>
+              <button type="button" onClick={() => setActiveModal(null)} className="ml-6 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#ded3c7] bg-white text-2xl leading-none transition hover:bg-[#f7f2eb]" aria-label="Close research modal">×</button>
             </div>
 
             <div className="space-y-10 p-6 md:p-10">
               <section>
                 <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#b57967]">Research focus</p>
-                <p className="mt-4 text-lg leading-9 text-neutral-700">This research investigates multifunctional self-healing composites for satellite structural applications, assessing how materials that can repair damage may improve durability for spacecraft exposed to thermal cycling, radiation, vacuum and micrometeoroid risk.</p>
+                <p className="mt-4 text-lg leading-9 text-neutral-700">This published qualitative scoping review investigated multifunctional self-healing composites for satellite structural applications, assessing how materials that can repair damage may improve durability for spacecraft exposed to thermal cycling, radiation, vacuum and micrometeoroid risk.</p>
               </section>
               <section>
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#b57967]">What I am contributing to</p>
+                <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#b57967]">My contribution · Junior Analyst</p>
                 <ul className="mt-4 space-y-4 text-base leading-8 text-neutral-700">
-                  <li>→ Conducting structured literature review across self-healing materials, composites and satellite structures.</li>
-                  <li>→ Comparing capsule-based, vascular and intrinsic self-healing approaches.</li>
-                  <li>→ Assessing trade-offs between healing performance, mechanical strength, mass, manufacturability and space-environment suitability.</li>
-                  <li>→ Translating complex academic literature into clear technical summaries and research arguments.</li>
-                  <li>→ Contributing to a research paper intended for publication through the society.</li>
+                  <li>→ Conducted structured literature review across self-healing materials, composites and satellite structures.</li>
+                  <li>→ Compared capsule-based, vascular and intrinsic self-healing approaches.</li>
+                  <li>→ Assessed trade-offs between healing performance, mechanical strength, mass, manufacturability and space-environment suitability.</li>
+                  <li>→ Translated complex academic literature into clear technical summaries and research arguments.</li>
+                  <li>→ Contributed as a Junior Analyst to the completed review published by Bristol Academic Research Society.</li>
                 </ul>
+                <a href="https://bristolressoc.com/Paper/2/" target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex rounded-md border border-[#ded3c7] px-5 py-3 text-sm font-semibold text-neutral-700 transition hover:bg-white">Read published paper ↗</a>
               </section>
             </div>
           </div>
