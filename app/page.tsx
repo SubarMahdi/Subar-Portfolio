@@ -303,7 +303,7 @@ export default function Home() {
 
             <div className="mt-10 space-y-7 text-lg leading-9 text-neutral-700">
               <p>I am drawn to engineering where ideas become physical systems: a mechanism that moves, a sensor that reveals something useful, or a prototype that improves through testing. My interests sit at the intersection of mechanical design, electronics and robotics.</p>
-              <p>That direction took me to USP Center for Robotics — CRob in São Carlos, Brazil, for a robotics internship. I worked on a manual two-jaw gripper, using Fusion 360 and 3D printing to connect CAD decisions with physical prototypes, alongside hands-on interaction with robots in the lab.</p>
+              <p>That direction took me to USP Center for Robotics — CRob in São Paulo, Brazil, for a robotics internship. I worked on a manual two-jaw gripper, using Fusion 360 and 3D printing to connect CAD decisions with physical prototypes, alongside hands-on interaction with robots in the lab.</p>
               <p>I value the work between an initial idea and a convincing result: understanding how parts fit, assembling a build, observing its behaviour and using evidence to decide what should change. My thermal monitoring, RC car and smart lamp projects have each developed a different part of that approach.</p>
               <p>Research is another part of how I work. As a Junior Analyst with Bristol Academic Research Society, I contributed to a published scoping review on self-healing composites for satellite applications, developing my ability to assess technical literature and communicate findings clearly.</p>
               <p>I am now studying Mechanical and Electrical Engineering with a Year in Industry at Cardiff University, following my completed Bristol foundation year. My ambition is to build the breadth and practical judgement to contribute across mechanical and electrical systems, with robotics as a central interest.</p>
@@ -396,7 +396,7 @@ export default function Home() {
                 <div>
                   <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#9bb8d1]">Robotics Engineer Intern</p>
                   <h3 className="mt-4 font-serif text-3xl leading-tight md:text-4xl">USP Center for Robotics — CRob</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/70">São Carlos, Brazil · Jun 2026–Sep 2026</p>
+                  <p className="mt-4 text-sm leading-7 text-white/70">São Paulo, Brazil · Jun 2026–Sep 2026</p>
                 </div>
                 <span className="rounded-full border border-white/20 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/80">Completed Internship</span>
               </div>
@@ -818,7 +818,7 @@ export default function Home() {
               </h3>
 
               <p className="mt-6 text-base leading-8 text-white/65">
-                Ongoing research collaboration with USP Center for Robotics — CRob following my completed internship in São Carlos, Brazil. The research context connects robotic data acquisition, manipulation and the relationship between physical platforms and supporting software workflows. My internship experience combined gripper prototyping, robot interaction and introductory exposure to ROS 2 and NVIDIA Isaac in the lab.
+                Ongoing research collaboration with USP Center for Robotics — CRob following my completed internship in São Paulo, Brazil. The research context connects robotic data acquisition, manipulation and the relationship between physical platforms and supporting software workflows. My internship experience combined gripper prototyping, robot interaction and introductory exposure to ROS 2 and NVIDIA Isaac in the lab.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-2">
@@ -1007,7 +1007,7 @@ export default function Home() {
                     USP Center for Robotics — CRob
                   </p>
                   <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-500">
-                    On-site · São Carlos, Brazil · Completed internship
+                    On-site · São Paulo, Brazil · Completed internship
                   </p>
                 </div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">
