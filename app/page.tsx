@@ -73,11 +73,11 @@ export default function Home() {
 
   const [thermalMediaIndex, setThermalMediaIndex] = useState(0);
   const softwareTools = [
-    { name: "Fusion 360 — Beginner" },
-    { name: "Autodesk Inventor — Beginner" },
-    { name: "ROS 2 Workflows — Introductory Exposure" },
-    { name: "Arduino IDE — Arduino Project Exposure" },
-    { name: "Excel" },
+    { name: "Fusion 360 — CAD modelling & assemblies" },
+    { name: "Autodesk Inventor — CAD modelling" },
+    { name: "ROS 2 — Research-lab exposure" },
+    { name: "Arduino — Embedded project development" },
+    { name: "Excel — Data analysis" },
   ];
 
   const [crobMediaIndex, setCrobMediaIndex] = useState(0);
@@ -199,7 +199,7 @@ export default function Home() {
             {navItems.map(([id, label]) => <a key={id} className="portfolio-nav-link" href={`#${id}`}>{label}</a>)}
           </div>
           <div className="flex items-center gap-3">
-            <a href="/Subar___Final_CV.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-xl border border-[#ded3c7] px-4 py-2 text-sm font-semibold">CV ↗</a>
+            <a href="/documents/Subar-Mahdi-CV-627a7d73ab9a.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-xl border border-[#ded3c7] px-4 py-2 text-sm font-semibold">CV ↗</a>
             <button ref={menuButtonRef} type="button" aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl border border-[#ded3c7] px-4 py-2 text-sm font-semibold xl:hidden">{menuOpen ? "Close menu" : "Menu ☰"}</button>
           </div>
         </div>
@@ -245,17 +245,9 @@ export default function Home() {
             <span className="italic text-[#b57967]">Mahdi</span>
           </h1>
 
-          <p className="mt-7 max-w-2xl text-xl leading-8 text-neutral-600">
-            Mechanical with Electrical Engineering Student
-          </p>
-
           <div className="mt-8 flex max-w-4xl flex-wrap gap-3">
-            <span className="rounded-full bg-[#18324a] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9bb8d1]">
-              USP Center for Robotics — CRob
-            </span>
-
-            <span className="rounded-full bg-[#ead4cd] px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-[#9b6a5d]">
-              Research Collaboration
+            <span className="max-w-full rounded-full bg-[#18324a] px-4 py-2 font-mono text-xs uppercase leading-6 tracking-[0.14em] text-[#9bb8d1]">
+              Cardiff University · BEng Mechanical &amp; Electrical Engineering
             </span>
           </div>
 
@@ -267,7 +259,7 @@ export default function Home() {
               Explore Internship
             </a>
             <a
-              href="/Subar___Final_CV.pdf"
+              href="/documents/Subar-Mahdi-CV-627a7d73ab9a.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-14 w-44 items-center justify-center rounded-md border border-[#ded3c7] bg-white/70 px-6 text-center text-sm font-semibold transition hover:bg-white"
@@ -356,7 +348,7 @@ export default function Home() {
                   <div className="p-6">
                     <p className="font-serif text-4xl">1</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.18em] text-neutral-500">
-                      Published Review
+                      Published Research Review
                     </p>
                   </div>
                 </div>
@@ -426,23 +418,16 @@ export default function Home() {
                 <div className="mt-6 space-y-5 text-base leading-8 text-neutral-700">
                   <p>Alongside prototyping, I took part in hands-on robot interaction in the lab. This brought the work beyond an isolated mechanism into an environment where operator input, robot movement and feedback form part of a larger control system.</p>
                   <p>The interaction footage shows the physical side of that experience. Behind a robot’s visible response are software interfaces that pass instructions to the control system and make information about its state available. My exposure to ROS 2 helped place that relationship between commands, movement and feedback in context.</p>
-                  <p>ROS 2 and NVIDIA Isaac formed part of the wider technical environment. Encountering these tools alongside physical robots introduced me to how communication, simulation and hardware operation support robotics development.</p>
                 </div>
               </div>
             </div>
             <div className="border-t border-[#e3d7cc] px-8 py-8 md:px-10">
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#b57967]">Technical context · ROS 2 &amp; NVIDIA Isaac</p>
-              <div className="mt-6 grid gap-8 md:grid-cols-2">
-                <div>
-                  <h4 className="font-serif text-2xl">Connecting commands and feedback</h4>
-                  <p className="mt-4 text-base leading-8 text-neutral-700">ROS 2 provides a communication framework between parts of a robotics system. Software components exchange messages: topics can carry streams such as sensor readings or robot-state information, while command interfaces request behaviour. This helps explain how an operator interface, control software and feedback can work together during robot interaction.</p>
-                </div>
-                <div>
-                  <h4 className="font-serif text-2xl">Simulation alongside physical hardware</h4>
-                  <p className="mt-4 text-base leading-8 text-neutral-700">NVIDIA Isaac provides tools for robotics simulation. In a ROS-connected simulation, robot-state and sensor information can be exchanged with external robotics software, and commands can be sent back to a simulated robot. This was part of the wider background to the lab work, giving context to the relationship between virtual environments and physical platforms.</p>
-                </div>
+              <h4 className="mt-6 font-serif text-2xl">Software context around the physical system</h4>
+              <div className="mt-4 max-w-4xl space-y-5 text-base leading-8 text-neutral-700">
+                <p>ROS 2 and NVIDIA Isaac formed part of the wider robotics environment at CRob. Through the lab’s workflows and hands-on interaction with robotic platforms, I gained introductory exposure to how software communication, robot commands, state feedback and simulation connect with physical hardware.</p>
+                <p>This gave me a clearer system-level understanding of how a mechanical platform fits within an integrated mechanical, software and control system, rather than viewing the robot purely as a physical machine. My practical work centred on CAD, 3D-printed gripper prototyping and hands-on robot interaction, while the software environment provided valuable context for how those physical systems are controlled, observed and developed.</p>
               </div>
-              <p className="mt-6 text-sm leading-7 text-neutral-600">My contribution combined CAD and physical prototyping with hands-on robot interaction; my experience of the supporting robotics software was introductory exposure within the lab.</p>
             </div>
             <div className="border-t border-[#e3d7cc] bg-[#f7f2eb] px-8 py-8 md:px-10">
               <h4 className="font-serif text-2xl">What the internship developed</h4>
@@ -788,10 +773,7 @@ export default function Home() {
             <article className="rounded-[1.75rem] border border-white/10 bg-white/[0.06] p-8 shadow-sm backdrop-blur">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-md bg-white/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/60">
-                  Research Paper
-                </span>
-                <span className="rounded-md bg-white/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-white/60">
-                  Published
+                  Published Scoping Review
                 </span>
               </div>
 
@@ -1136,7 +1118,7 @@ export default function Home() {
               LinkedIn ↗
             </a>
             <a
-              href="/Subar___Final_CV.pdf"
+              href="/documents/Subar-Mahdi-CV-627a7d73ab9a.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-md border border-white/20 bg-transparent px-8 py-4 text-sm font-semibold text-white transition hover:bg-white/10"
